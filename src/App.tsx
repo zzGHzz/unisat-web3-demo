@@ -3,15 +3,17 @@ import "./App.css";
 import { Button, Card, CollapseProps, Input, Radio, message } from "antd";
 import { CHAINS_MAP, ChainType } from "./const";
 import { copyToClipboard, satoshisToAmount } from "./utils";
-import { SendBitcoinCard } from "./components/SendBitcoinCard";
-import { PushPsbtCard } from "./components/PushPsbtCard";
-import { PushTxCard } from "./components/PushTxCard";
-import { SignMessageCard } from "./components/SignMessageCard";
-import { SignPsbtCard } from "./components/SignPsbtCard";
+// import { SendBitcoinCard } from "./components/SendBitcoinCard";
+// import { PushPsbtCard } from "./components/PushPsbtCard";
+// import { PushTxCard } from "./components/PushTxCard";
+// import { SignMessageCard } from "./components/SignMessageCard";
+// import { SignPsbtCard } from "./components/SignPsbtCard";
+// import { InscribeTransferCard } from "./components/InscribeTransferCard";
+// import { SendInscriptionCard } from "./components/SendInscriptionCard";
+// import { SendRunesCard } from "./components/SendRunesCard";
+
 import { Collapse } from "antd";
-import { InscribeTransferCard } from "./components/InscribeTransferCard";
-import { SendInscriptionCard } from "./components/SendInscriptionCard";
-import { SendRunesCard } from "./components/SendRunesCard";
+import { SendToBridgeCard } from "./components/SendToBridgeCard";
 import useMessage from "antd/es/message/useMessage";
 
 function App() {
@@ -191,46 +193,51 @@ function App() {
 
   const items: CollapseProps["items"] = [
     {
-      key: "sendBitcoin",
-      label: <div style={{ textAlign: "start" }}>unisat.sendBitcoin</div>,
-      children: <SendBitcoinCard />,
+      key: "sendToBridge",
+      label: <div style={{ textAlign: "start" }}>TEENet: send to bridge</div>,
+      children: <SendToBridgeCard account={accounts[0]} strNetwork={network} balanceConfirmed={balance.confirmed} pubkeyHex={publicKey}/>,
     },
-    {
-      key: "sendInscription",
-      label: <div style={{ textAlign: "start" }}>unisat.sendInscription</div>,
-      children: <SendInscriptionCard />,
-    },
+    // {
+    //   key: "sendBitcoin",
+    //   label: <div style={{ textAlign: "start" }}>unisat.sendBitcoin</div>,
+    //   children: <SendBitcoinCard />,
+    // },
+    // {
+    //   key: "sendInscription",
+    //   label: <div style={{ textAlign: "start" }}>unisat.sendInscription</div>,
+    //   children: <SendInscriptionCard />,
+    // },
 
-    {
-      key: "sendRunes",
-      label: <div style={{ textAlign: "start" }}>unisat.sendRunes</div>,
-      children: <SendRunesCard />,
-    },
-    {
-      key: "inscribeTransfer",
-      label: <div style={{ textAlign: "start" }}>unisat.inscribeTransfer</div>,
-      children: <InscribeTransferCard />,
-    },
-    {
-      key: "signMessage",
-      label: <div style={{ textAlign: "start" }}>unisat.signMessage</div>,
-      children: <SignMessageCard />,
-    },
-    {
-      key: "signPsbt",
-      label: <div style={{ textAlign: "start" }}>unisat.signPsbt</div>,
-      children: <SignPsbtCard />,
-    },
-    {
-      key: "pushPsbt",
-      label: <div style={{ textAlign: "start" }}>unisat.signPsbt</div>,
-      children: <PushPsbtCard />,
-    },
-    {
-      key: "pushTx",
-      label: <div style={{ textAlign: "start" }}>unisat.pushTx</div>,
-      children: <PushTxCard />,
-    },
+    // {
+    //   key: "sendRunes",
+    //   label: <div style={{ textAlign: "start" }}>unisat.sendRunes</div>,
+    //   children: <SendRunesCard />,
+    // },
+    // {
+    //   key: "inscribeTransfer",
+    //   label: <div style={{ textAlign: "start" }}>unisat.inscribeTransfer</div>,
+    //   children: <InscribeTransferCard />,
+    // },
+    // {
+    //   key: "signMessage",
+    //   label: <div style={{ textAlign: "start" }}>unisat.signMessage</div>,
+    //   children: <SignMessageCard />,
+    // },
+    // {
+    //   key: "signPsbt",
+    //   label: <div style={{ textAlign: "start" }}>unisat.signPsbt</div>,
+    //   children: <SignPsbtCard />,
+    // },
+    // {
+    //   key: "pushPsbt",
+    //   label: <div style={{ textAlign: "start" }}>unisat.signPsbt</div>,
+    //   children: <PushPsbtCard />,
+    // },
+    // {
+    //   key: "pushTx",
+    //   label: <div style={{ textAlign: "start" }}>unisat.pushTx</div>,
+    //   children: <PushTxCard />,
+    // },
   ];
 
   const chains = Object.keys(CHAINS_MAP).map((key) => {
