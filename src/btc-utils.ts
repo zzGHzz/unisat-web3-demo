@@ -128,10 +128,45 @@ const psbtAddInput = (
 
             break;
         }
-        case AddressType.P2SH_P2WPKH:
+        case AddressType.P2SH_P2WPKH:{
+            const p2wpkh = bitcoin.payments.p2wpkh({
+                pubkey: utxo.pubkey!,
+                network: network,
+            })
+
+            const p2sh = bitcoin.payments.p2sh({
+                redeem: p2wpkh,
+                network: network,
+            });
+
+            psbt.addInput({
+                hash: utxo.txid,
+                index: utxo.vout,
+                redeemScript: p2sh.redeem!.output!,
+                witnessUtxo: {
+                    script: p2wpkh.output!,
+                    value: BigInt(utxo.value),
+                }
+            });
+
             break;
-        case AddressType.P2WPKH:
+        }
+        case AddressType.P2WPKH:{
+            const { output } = bitcoin.payments.p2wpkh({
+                pubkey: utxo.pubkey!,
+                network: network,
+            });
+
+            psbt.addInput({
+                hash: utxo.txid,
+                index: utxo.vout,
+                witnessUtxo: {
+                    script: output!,
+                    value: BigInt(utxo.value),
+                }
+            });
             break;
+        }
         case AddressType.P2TR: {
             const { output } = bitcoin.payments.p2tr({
                 internalPubkey: utxo.pubkey!,
@@ -164,7 +199,7 @@ const getTxPartSize = (type: AddressType, part: TxPart) => {
         case AddressType.P2SH_P2WPKH:
             return part === TxPart.INPUT ? 107 : 32;
         case AddressType.P2WPKH:
-            return part === TxPart.INPUT ? 68 : 31;
+            return part === TxPart.INPUT ? 68 : 32;
         case AddressType.P2TR:
             return part === TxPart.INPUT ? 58 : 43;
         default:
@@ -280,7 +315,7 @@ export const genSendToBridgeTx = async (arg: SendToBridgeTxArgs) => {
         bal += utxo.value;
 
         utxo.pubkey = pubkey;
-        utxo = await fetchUtxo(utxo, accoutType, strNetwork);
+        await fetchUtxo(utxo, accoutType, strNetwork);
 
         psbt = psbtAddInput(
             psbt,
