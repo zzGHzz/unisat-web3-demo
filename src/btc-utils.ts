@@ -2,6 +2,7 @@ import * as bitcoin from "bitcoinjs-lib";
 import { Utxo, AddressType, TxPart, TxConfig } from "./types";
 import { getApiUrl, bridgeWallet, dustLimit } from "./common";
 import * as tools from 'uint8array-tools';
+import { encodeEthAddress } from "./ethaddress";
 
 // Fetch the UTXO list of an address via a API call
 const getUtxoList = async (address: string, network: string) => {
@@ -284,7 +285,7 @@ export const genSendToBridgeTx = async (arg: SendToBridgeTxArgs) => {
     const allUtxos = await getUtxoList(account, strNetwork);
 
     // Compute max fee - including all possible utxos as inputs
-    const opReturnDat: string = chainId + evmAddress;
+    const opReturnDat: string = encodeEthAddress(chainId, evmAddress);
     const bridgeWalletType = getAddressType(bridgeWallet, network);
     const cfg: TxConfig = {
         input: new Map<AddressType, number>([[accoutType, allUtxos.length]]),
@@ -325,16 +326,16 @@ export const genSendToBridgeTx = async (arg: SendToBridgeTxArgs) => {
         )
     }
 
-    // Add output that records the account that received the wrapped BTC tokens
-    psbt.addOutput({
-        script: bitcoin.script.compile([bitcoin.opcodes.OP_RETURN, Buffer.from(opReturnDat, 'utf8')]),
-        value: BigInt(0),
-    });
-
     // Add output to send fund to the bridge wallet
     psbt.addOutput({
         value: BigInt(amount),
         address: bridgeWallet,
+    });
+
+    // Add output that records the account that received the wrapped BTC tokens
+    psbt.addOutput({
+        script: bitcoin.script.compile([bitcoin.opcodes.OP_RETURN, Buffer.from(opReturnDat, 'utf8')]),
+        value: BigInt(0),
     });
 
     // Recompute fee
